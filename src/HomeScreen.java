@@ -7,7 +7,7 @@ public class HomeScreen {
         // Greet the user
         boolean isRunning = true; //a loop will start until the user inputs a correct action
         while (isRunning) {
-            System.out.println("Welcome to The Zarkovian Bank. How can we assist you today?");
+            System.out.println("Welcome to The Zarkovian Transactions Center. How can we assist you today?");
             //Open home menu and the option for the user to input his request
             System.out.println("D Add Deposit\nP Make Payment\nL Display the ledger screen\nX Exit application");
             Scanner scanner = new Scanner(System.in);
@@ -18,6 +18,20 @@ public class HomeScreen {
 
             //All possible actions made by the user
             switch (choice) {
+                case"D":
+                    System.out.println("Enter the amount you want to deposit:");
+                    String depositAmount=scanner.nextLine().trim();
+
+                    try {
+                        java.io.FileWriter writer = new java.io.FileWriter("transactionsAmount.csv", true);
+                        writer.write("Deposit, " + depositAmount + "\n"); //write the deposit to the file
+                        writer.close();
+                        System.out.println("Deposit of $" + depositAmount + "has been added to your transactions");
+                    }catch(Exception e){
+                        System.out.println("An error occured while saving your deposit.");
+                    }
+                    break;
+
                 case "L":
                     boolean inLedger=true;
                     System.out.println("Here is a ledger of all your transactions:");
@@ -44,7 +58,7 @@ public class HomeScreen {
 
                 case "X":
                     isRunning = false; //application ends
-                    System.out.println("Thank you for choosing The Zarkovian Bank");
+                    System.out.println("Thank you for choosing The Zarkovian Transactions Center.");
                     break;
             }
         }
