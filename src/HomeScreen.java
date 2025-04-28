@@ -90,136 +90,193 @@ public class HomeScreen {
                 //ALL TRANSACTIONS VIEW
                 case "L":
                     boolean inLedger = true;
-                    System.out.println("How would you like to view your transactions?");
-                    System.out.println(" A All Transactions");
-                    System.out.println(" D Only Deposits");
-                    System.out.println(" G Only Payments");
-                    System.out.println(" R View Reports");
+                    while (inLedger) {
+                        System.out.println("How would you like to view your transactions?");
+                        System.out.println(" A All Transactions");
+                        System.out.println(" D Only Deposits");
+                        System.out.println(" G Only Payments");
+                        System.out.println(" R View Reports");
+                        System.out.println(" H Return to Home Screen");
 
-                    Scanner inputScanner = new Scanner(System.in);
-                    String ledgerOption = inputScanner.nextLine().trim().toUpperCase();
+                        String ledgerOption = scanner.nextLine().trim().toUpperCase();
 
-                    switch (ledgerOption) {
-                        case "A":  //sort the search with the following switches
-                            System.out.println("Here is a ledger of all your transactions");
-                            try {
-                                File taskFile = new File("transactionsAmount.csv");
-                                Scanner fileScanner = new Scanner(taskFile);
+                        switch (ledgerOption) {
+                            case "A":  //sort the search with the following switches
+                                System.out.println("Here is a ledger of all your transactions");
+                                try {
+                                    File taskFile = new File("transactionsAmount.csv");
+                                    Scanner fileScanner = new Scanner(taskFile);
 
-                                ArrayList<String> transactions = new ArrayList<>();
+                                    ArrayList<String> transactions = new ArrayList<>();
 
-                                while (fileScanner.hasNextLine()) {
-                                    String line = fileScanner.nextLine();
-                                    transactions.add(line);
+                                    while (fileScanner.hasNextLine()) {
+                                        String line = fileScanner.nextLine();
+                                        transactions.add(line);
+                                    }
+
+                                    fileScanner.close();
+                                    //Print from last to first
+
+                                    for (int i = transactions.size() - 1; i >= 0; i--) {
+                                        System.out.println(transactions.get(i));
+                                    }
+                                } catch (FileNotFoundException e) {
+                                    System.out.println("No more transactions to show. Returning to Home Screen...");
+                                    break;
                                 }
-
-                                fileScanner.close();
-                                //Print from last to first
-
-                                for (int i = transactions.size() - 1; i >= 0; i--) {
-                                    System.out.println(transactions.get(i));
-                                }
-                            } catch (FileNotFoundException e) {
-                                System.out.println("No more transactions to show. Returning to Home Screen...");
                                 break;
-                            }
-                            break;
 
-                        case "D":
-                            //ALL DEPOSITS VIEW
-                            System.out.println("Here is a ledger of all your DEPOSITS:");
-                            try {
-                                File taskFile = new File("transactionsAmount.csv");
-                                Scanner fileScanner = new Scanner(taskFile);
+                            case "D":
+                                //ALL DEPOSITS VIEW
+                                System.out.println("Here is a ledger of all your DEPOSITS:");
+                                try {
+                                    File taskFile = new File("transactionsAmount.csv");
+                                    Scanner fileScanner = new Scanner(taskFile);
 
-                                ArrayList<String> deposits = new ArrayList<>();
+                                    ArrayList<String> deposits = new ArrayList<>();
 
-                                while (fileScanner.hasNextLine()) {
-                                    String line = fileScanner.nextLine();
+                                    while (fileScanner.hasNextLine()) {
+                                        String line = fileScanner.nextLine();
 
-                                    //split line intro parts
-                                    String[] parts = line.split("\\|");
-                                    if (parts.length >= 4) {
-                                        String amountPart = parts[3];  //amount is the 4th field starting from 0
+                                        //split line intro parts
+                                        String[] parts = line.split("\\|");
+                                        if (parts.length >= 4) {
+                                            String amountPart = parts[3];  //amount is the 4th field starting from 0
 
-                                        try {
-                                            double amount = Double.parseDouble(amountPart);
-                                            if (amount > 0) {
-                                                deposits.add(line);
+                                            try {
+                                                double amount = Double.parseDouble(amountPart);
+                                                if (amount > 0) {
+                                                    deposits.add(line);
+                                                }
+                                            } catch (NumberFormatException e) {
                                             }
-                                        } catch (NumberFormatException e) {
                                         }
                                     }
+                                    fileScanner.close();
+                                    for (int i = deposits.size() - 1, count = 1; i >= 0; i--, count++) {
+                                        System.out.println(deposits.get(i));
+                                    }
+                                } catch (FileNotFoundException e) {
+                                    System.out.println("No deposits found. Returning to Home Screen...");
+                                    break;
                                 }
-                                fileScanner.close();
-                                for (int i = deposits.size() - 1, count = 1; i >= 0; i--, count++) {
-                                    System.out.println(deposits.get(i));
-                                }
-                            } catch (FileNotFoundException e) {
-                                System.out.println("No deposits found. Returning to Home Screen...");
                                 break;
-                            }
-                            break;
 
-                        case "G":
-                            //ALL PAYMENTS VIEW
-                            System.out.println("Here is a ledger of all your PAYMENTS:");
-                            try {
-                                File taskFile = new File("transactionsAmount.csv");
-                                Scanner fileScanner = new Scanner(taskFile);
+                            case "G":
+                                //ALL PAYMENTS VIEW
+                                System.out.println("Here is a ledger of all your PAYMENTS:");
+                                try {
+                                    File taskFile = new File("transactionsAmount.csv");
+                                    Scanner fileScanner = new Scanner(taskFile);
 
-                                ArrayList<String> payments = new ArrayList<>();
+                                    ArrayList<String> payments = new ArrayList<>();
 
-                                while (fileScanner.hasNextLine()) {
-                                    String line = fileScanner.nextLine();
+                                    while (fileScanner.hasNextLine()) {
+                                        String line = fileScanner.nextLine();
 
-                                    //split line intro parts
-                                    String[] parts = line.split("\\|");
-                                    if (parts.length >= 4) {
-                                        String amountPart = parts[3];  //amount is the 4th field starting from 0
+                                        //split line intro parts
+                                        String[] parts = line.split("\\|");
+                                        if (parts.length >= 4) {
+                                            String amountPart = parts[3];  //amount is the 4th field starting from 0
 
-                                        try {
-                                            double amount = Double.parseDouble(amountPart);
-                                            if (amount < 0) {
-                                                payments.add(line);
+                                            try {
+                                                double amount = Double.parseDouble(amountPart);
+                                                if (amount < 0) {
+                                                    payments.add(line);
+                                                }
+                                            } catch (NumberFormatException e) {
                                             }
-                                        } catch (NumberFormatException e) {
                                         }
                                     }
+                                    fileScanner.close();
+                                    for (int i = payments.size() - 1, count = 1; i >= 0; i--, count++) {
+                                        System.out.println(payments.get(i));
+                                    }
+                                } catch (FileNotFoundException e) {
+                                    System.out.println("No payments found. Returning to Home Screen...");
+                                    break;
                                 }
-                                fileScanner.close();
-                                for (int i = payments.size() - 1, count = 1; i >= 0; i--, count++) {
-                                    System.out.println(payments.get(i));
-                                }
-                            } catch (FileNotFoundException e) {
-                                System.out.println("No payments found. Returning to Home Screen...");
                                 break;
-                            }
-                            break;
-                        default:
-                            System.out.println("Invalid option. Returning to Home Screen");
-                            break;
+
+
+                            // NOW THE REPORTS VIEW
+                            case "R":
+                                boolean inReports = true;
+                                while (inReports) {  //The loop will stay in the reports below
+                                    System.out.println("Always get your info, never miss a payment. Trust the Zarkovian Transactions Center.");
+                                    System.out.println(" 1 Month to Date");
+                                    System.out.println(" 2 Previous Month");
+                                    System.out.println(" 3 Year to Date");
+                                    System.out.println(" 4 Previous Year");
+                                    System.out.println(" 5 Search by Vendor or Description");
+                                    System.out.println(" 6 Custom Search");
+                                    System.out.println("Type H to return to the ledger options");
+
+                                    System.out.println("Enter your choice: ");
+                                    String reportChoice = scanner.nextLine().trim().toUpperCase();
+
+                                    switch (reportChoice) {
+                                        case "1":
+                                            System.out.println("Showing Month to Date Report...");
+                                            // code to handle MTD report
+                                            break;
+                                        case "2":
+                                            System.out.println("Showing Previous Month Report...");
+                                            // code for previous month
+                                            break;
+                                        case "3":
+                                            System.out.println("Showing Year to Date Report...");
+                                            // code for YTD
+                                            break;
+                                        case "4":
+                                            System.out.println("Showing Previous Year Report...");
+                                            // code for previous year
+                                            break;
+                                        case "5":
+                                            System.out.println("Search by Vendor/Description...");
+                                            // code to search
+                                            break;
+                                        case "6":
+                                            System.out.println("Custom Search...");
+                                            // code for custom search
+                                            break;
+
+                                        case "H":
+                                            inReports = false;
+                                            break;
+
+                                        default:
+                                            System.out.println("Invalid choice. Please try again.");
+                                            break;
+                                    }
+                                }
+                                break;
+
+                            case "H":
+                                inLedger=false;
+                                break;
+                            default:
+                                System.out.println("Invalid choice Please try again.");
+
+                            //EXIT THE PROGRAM
+                            case "X":
+                                isRunning = false; //application ends
+                                System.out.println("Thank you for choosing The Zarkovian Transactions Center.");
+                                break;
+                        }
                     }
-                    System.out.println("All registered payments. Type X to return to the Home Screen.");
-                    String ledgerChoice = inputScanner.nextLine().trim().toUpperCase();
-                    if (ledgerChoice.equals("x")) {
-                        inLedger = false;
-                    }
-
-                    break;
-
-                case "X":
-                    isRunning = false; //application ends
-                    System.out.println("Thank you for choosing The Zarkovian Transactions Center.");
-                    break;
-
-                default:
-                    System.out.println("Invalid choice. Please try again.");
-                    break;
             }
         }
     }
 }
+
+
+
+
+
+
+
+
 
 
 
