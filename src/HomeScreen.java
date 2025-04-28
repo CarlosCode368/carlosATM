@@ -218,38 +218,90 @@ public class HomeScreen {
                                     switch (reportChoice) {
                                         case "1":
                                             System.out.println("Showing Month to Date Report...");
-                                            // code to handle MTD report
-                                            break;
-                                        case "2":
-                                            System.out.println("Showing Previous Month Report...");
-                                            // code for previous month
-                                            break;
-                                        case "3":
-                                            System.out.println("Showing Year to Date Report...");
-                                            // code for YTD
-                                            break;
-                                        case "4":
-                                            System.out.println("Showing Previous Year Report...");
-                                            // code for previous year
-                                            break;
-                                        case "5":
-                                            System.out.println("Search by Vendor/Description...");
-                                            // code to search
-                                            break;
-                                        case "6":
-                                            System.out.println("Custom Search...");
-                                            // code for custom search
-                                            break;
+                                            LocalDateTime now = LocalDateTime.now();
+                                            int currentMonth = now.getMonthValue();
+                                            int currentYear = now.getYear();
 
-                                        case "H":
-                                            inReports = false;
-                                            break;
+                                            try {
+                                                File taskFile = new File("transactionsAmount.csv");
+                                                Scanner fileScanner = new Scanner(taskFile);
 
-                                        default:
-                                            System.out.println("Invalid choice. Please try again.");
-                                            break;
+                                                ArrayList<String> mtdTransactions = new ArrayList<>();  //defining the month to date transactions
+
+                                                while (fileScanner.hasNextLine()) {
+                                                    String line = fileScanner.nextLine();
+
+                                                    String[] parts = line.split("\\|");
+                                                    if (parts.length >= 3) {
+                                                        String datePart = parts[0];
+                                                        String[] dateParts = datePart.split("-");
+
+                                                        if (dateParts.length == 3) {
+                                                            int transactionYear = Integer.parseInt(dateParts[0]);
+                                                            int transactionMonth = Integer.parseInt(dateParts[1]);
+                                                            //comparing the month and year displayed with the current month and year in real time
+                                                            if (transactionYear == currentYear && transactionMonth == currentMonth) {
+                                                                mtdTransactions.add(line);
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                                        fileScanner.close();
+
+                                                    if (mtdTransactions.isEmpty()) {
+                                                        System.out.println("No transactions for this month.");
+                                                    } else {
+                                                        System.out.println("Month to Date Transactions:");
+                                                        for (String transaction : mtdTransactions) {
+                                                            System.out.println(transaction);
+                                                        }
+                                                    }
+                                                }catch(FileNotFoundException e){
+                                                    System.out.println("No transactions found.Returning to Home Screen...");
+
+                                                }
+                                                System.out.println("Type X to return to the Reports Screen");
+                                                String returnChoice = scanner.nextLine().trim().toUpperCase();
+                                                if (returnChoice.equals("X")) {
+                                                    System.out.println("Returning to the Reports Screen...");
+                                                    break;
+                                                }
+                                                break;
+                                                case "2":
+                                                    System.out.println("Showing Previous Month Report...");
+                                                    // code for previous month
+                                                    break;
+                                                case "3":
+                                                    System.out.println("Showing Year to Date Report...");
+                                                    // code for YTD
+                                                    break;
+                                                case "4":
+                                                    System.out.println("Showing Previous Year Report...");
+                                                    // code for previous year
+                                                    break;
+                                                case "5":
+                                                    System.out.println("Search by Vendor/Description...");
+                                                    // code to search
+                                                    break;
+                                                case "6":
+                                                    System.out.println("Custom Search...");
+                                                    // code for custom search
+                                                    break;
+
+                                                case "H":
+                                                    inReports = false;
+                                                    break;
+
+                                                default:
+                                                    System.out.println("Invalid choice. Please try again.");
+                                                    break;
+
                                     }
                                 }
+                        }
+                    }
+
                                 break;
 
                             case "H":
@@ -267,8 +319,8 @@ public class HomeScreen {
                     }
             }
         }
-    }
-}
+
+
 
 
 
