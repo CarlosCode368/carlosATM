@@ -1,4 +1,5 @@
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
@@ -11,7 +12,7 @@ public class HomeScreen {
         while (isRunning) {
             System.out.println("Welcome to The Zarkovian Transactions Center. How can we assist you today?");
             //Open home menu and the option for the user to input his request
-            System.out.println("D Add Deposit\nP Make Payment\nL Display the ledger screen\nX Exit application");
+            System.out.println("D Add Deposit\nP Make Payment\nL Display the ledger options\nX Exit application");
             Scanner scanner = new Scanner(System.in);
             String action = " ";
             //Reassure the user the input requested
@@ -87,21 +88,38 @@ public class HomeScreen {
 
                 case "L":
                     boolean inLedger=true;
-                    System.out.println("Here is a ledger of all your transactions:");
+                    System.out.println("How would you like to view your transactions?");
+                    System.out.println(" A All Transactions");
+
+                    Scanner inputScanner=new Scanner(System.in);
+                    String ledgerOption=inputScanner.nextLine().trim().toUpperCase();
+
+                    switch(ledgerOption){
+                        case "A":  //sort the search with the following switches
+                            System.out.println("Here is a ledger of all your transactions");
+                    }
                     try {
                         File taskFile = new File("transactionsAmount.csv");
                         Scanner fileScanner = new Scanner(taskFile);
+
+                        ArrayList<String>transactions=new ArrayList<>();
+
                         while (fileScanner.hasNextLine()) {
                             String line = fileScanner.nextLine();
-                            System.out.println(line);
+                            transactions.add(line);
                         }
+
                         fileScanner.close();
+                        //Print from last to first
+
+                        for(int i=transactions.size()-1;i>=0;i--){
+                            System.out.println(transactions.get(i));
+                        }
                     } catch (FileNotFoundException e) {
                         System.out.println("No more transactions to show. Returning to Home Screen...");
                         break;
                     }
                     System.out.println("All registered transactions. Type X to return to the Home Screen.");
-                    Scanner inputScanner = new Scanner(System.in);
                     String ledgerChoice = inputScanner.nextLine().trim().toUpperCase();
                     if (ledgerChoice.equals("x")) {
                         inLedger = false;
