@@ -1,6 +1,8 @@
 import java.io.File;
 import java.util.Scanner;
 import java.io.FileNotFoundException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class HomeScreen {
     public static void main(String[] args) {
@@ -20,15 +22,33 @@ public class HomeScreen {
             switch (choice) {
                 case"D":
                     System.out.println("Enter the amount you want to deposit:");
-                    String depositAmount=scanner.nextLine().trim();
+                    String depositInput=scanner.nextLine().trim();
+                    double depositAmount=0.0;
 
                     try {
+                        depositAmount = Double.parseDouble(depositInput); //So it only accepts numbers
+                    }catch(NumberFormatException e){
+                        System.out.println("System only accepts numbers.");
+                        break;
+                    }
+                    //Ask for a description of the deposit
+                    System.out.println("Enter a description for the deposit (example: Payroll, bonuses, etc.):");
+                    String depositDescription=scanner.nextLine().trim();
+
+                    try {
+                        String formattedAmount=String.format("%.2f", depositAmount);
+
+                        //Display current date and time
+                        LocalDateTime now= LocalDateTime.now();
+                        DateTimeFormatter formatter=DateTimeFormatter.ofPattern("yyyy-MM-dd|HH:mm:ss|"); //the way you want it to be formatted and displayed
+                        String formattedDateTime= now.format(formatter);
+
                         java.io.FileWriter writer = new java.io.FileWriter("transactionsAmount.csv", true);
-                        writer.write("Deposit, " + depositAmount + "\n"); //write the deposit to the file
+                        writer.write(formattedDateTime + depositDescription +"|" +formattedAmount +"\n"); //write the deposit to the file
                         writer.close();
-                        System.out.println("Deposit of $" + depositAmount + "has been added to your transactions");
+                        System.out.println("Deposit of $" + depositAmount + " has been added to your transactions");
                     }catch(Exception e){
-                        System.out.println("An error occured while saving your deposit.");
+                        System.out.println("An error occurred while saving your deposit.");
                     }
                     break;
 
