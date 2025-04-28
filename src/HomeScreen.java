@@ -215,13 +215,14 @@ public class HomeScreen {
                                     System.out.println("Enter your choice: ");
                                     String reportChoice = scanner.nextLine().trim().toUpperCase();
 
+                                    LocalDateTime now = LocalDateTime.now();
+                                    int currentMonth = now.getMonthValue();
+                                    int currentYear = now.getYear();
+                                    String returnChoice="";
+
                                     switch (reportChoice) {
                                         case "1":
                                             System.out.println("Showing Month to Date Report...");
-                                            LocalDateTime now = LocalDateTime.now();
-                                            int currentMonth = now.getMonthValue();
-                                            int currentYear = now.getYear();
-
                                             try {
                                                 File taskFile = new File("transactionsAmount.csv");
                                                 Scanner fileScanner = new Scanner(taskFile);
@@ -247,32 +248,82 @@ public class HomeScreen {
                                                     }
                                                 }
 
-                                                        fileScanner.close();
+                                                fileScanner.close();
 
-                                                    if (mtdTransactions.isEmpty()) {
-                                                        System.out.println("No transactions for this month.");
-                                                    } else {
-                                                        System.out.println("Month to Date Transactions:");
-                                                        for (String transaction : mtdTransactions) {
-                                                            System.out.println(transaction);
+                                                if (mtdTransactions.isEmpty()) {
+                                                    System.out.println("No transactions for this month.");
+                                                } else {
+                                                    System.out.println("Month to Date Transactions:");
+                                                    for (String transaction : mtdTransactions) {
+                                                        System.out.println(transaction);
+                                                    }
+                                                }
+                                            } catch (FileNotFoundException e) {
+                                                System.out.println("No transactions found.Returning to Home Screen...");
+
+                                            }
+                                            System.out.println("Type X to return to the Reports Screen");
+                                            returnChoice = scanner.nextLine().trim().toUpperCase();
+                                            if (returnChoice.equals("X")) {
+                                                System.out.println("Returning to the Reports Screen...");
+                                                break;
+                                            }
+                                            break;
+
+                                        case "2": //for now I left now transaction for last month just so i can see the error message.
+                                            System.out.println("Showing Previous Month Report...");
+
+                                            int lastMonth=(currentMonth==1)?12:currentMonth-1;
+                                            int previousYear=(currentMonth==1)?currentYear-1:currentYear;
+
+                                            try {
+                                                File taskFile = new File("transactionsAmount.csv");
+                                                Scanner fileScanner = new Scanner(taskFile);
+
+                                                ArrayList<String> lmTransactions = new ArrayList<>();  //defining the month to date transactions
+
+                                                while (fileScanner.hasNextLine()) {
+                                                    String line = fileScanner.nextLine();
+
+                                                    String[] parts = line.split("\\|");
+                                                    if (parts.length >= 3) {
+                                                        String datePart = parts[0];
+                                                        String[] dateParts = datePart.split("-");
+
+                                                        if (dateParts.length == 3) {
+                                                            int transactionYear = Integer.parseInt(dateParts[0]);
+                                                            int transactionMonth = Integer.parseInt(dateParts[1]);
+                                                            //comparing the month and year displayed with the current month and year in real time
+                                                            if (transactionYear == previousYear && transactionMonth == lastMonth) {
+                                                                lmTransactions.add(line);
+                                                            }
                                                         }
                                                     }
-                                                }catch(FileNotFoundException e){
-                                                    System.out.println("No transactions found.Returning to Home Screen...");
+                                                }
 
+                                                fileScanner.close();
+
+                                                if (lmTransactions.isEmpty()) {
+                                                    System.out.println("No transactions for the previous month.");
+                                                } else {
+                                                    System.out.println("Previous Month Transactions:");
+                                                    for (String transaction : lmTransactions) {
+                                                        System.out.println(transaction);
+                                                    }
                                                 }
-                                                System.out.println("Type X to return to the Reports Screen");
-                                                String returnChoice = scanner.nextLine().trim().toUpperCase();
-                                                if (returnChoice.equals("X")) {
-                                                    System.out.println("Returning to the Reports Screen...");
-                                                    break;
-                                                }
+                                            } catch (FileNotFoundException e) {
+                                                System.out.println("No transactions found.Returning to Home Screen...");
+
+                                            }
+                                            System.out.println("Type X to return to the Reports Screen");
+                                            returnChoice = scanner.nextLine().trim().toUpperCase();
+                                            if (returnChoice.equals("X")) {
+                                                System.out.println("Returning to the Reports Screen...");
                                                 break;
-                                                case "2":
-                                                    System.out.println("Showing Previous Month Report...");
-                                                    // code for previous month
-                                                    break;
-                                                case "3":
+                                            }
+                                            break;
+
+                                        case "3":
                                                     System.out.println("Showing Year to Date Report...");
                                                     // code for YTD
                                                     break;
