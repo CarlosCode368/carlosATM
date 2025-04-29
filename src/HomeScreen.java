@@ -210,7 +210,7 @@ public class HomeScreen {
                                     System.out.println(" 4 Previous Year");
                                     System.out.println(" 5 Search by Vendor or Description");
                                     System.out.println(" 6 Custom Search");
-                                    System.out.println("Type H to return to the ledger options");
+                                    System.out.println("Type 0 to return to the Home Menu");
 
                                     System.out.println("Enter your choice: ");
                                     String reportChoice = scanner.nextLine().trim().toUpperCase();
@@ -218,6 +218,7 @@ public class HomeScreen {
                                     LocalDateTime now = LocalDateTime.now();
                                     int currentMonth = now.getMonthValue();
                                     int currentYear = now.getYear();
+                                    int previousYear=currentYear-1;
                                     String returnChoice="";
 
                                     switch (reportChoice) {
@@ -274,7 +275,7 @@ public class HomeScreen {
                                             System.out.println("Showing Previous Month Report...");
 
                                             int lastMonth=(currentMonth==1)?12:currentMonth-1;
-                                            int previousYear=(currentMonth==1)?currentYear-1:currentYear;
+
 
                                             try {
                                                 File taskFile = new File("transactionsAmount.csv");
@@ -374,11 +375,96 @@ public class HomeScreen {
 
                                                 case "4":
                                                     System.out.println("Showing Previous Year Report...");
-                                                    // code for previous year
+                                                    try {
+                                                        File taskFile = new File("transactionsAmount.csv");
+                                                        Scanner fileScanner = new Scanner(taskFile);
+
+                                                        ArrayList<String> pyTransactions = new ArrayList<>();  //defining the month to date transactions
+
+                                                        while (fileScanner.hasNextLine()) {
+                                                            String line = fileScanner.nextLine();
+
+                                                            String[] parts = line.split("\\|");
+                                                            if (parts.length >= 3) {
+                                                                String datePart = parts[0];
+                                                                String[] dateParts = datePart.split("-");
+
+                                                                if (dateParts.length == 3) {
+                                                                    int transactionYear = Integer.parseInt(dateParts[0]);
+                                                                    if(transactionYear==previousYear){
+                                                                        pyTransactions.add(line);
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+
+                                                        fileScanner.close();
+
+                                                        if (pyTransactions.isEmpty()) {
+                                                            System.out.println("No transactions last year.");
+                                                        } else {
+                                                            System.out.println("Last year transactions:");
+                                                            for (String transaction : pyTransactions) {
+                                                                System.out.println(transaction);
+                                                            }
+                                                        }
+                                                    } catch (FileNotFoundException e) {
+                                                        System.out.println("No transactions found.Returning to Home Screen...");
+
+                                                    }
+                                                    System.out.println("Type X to return to the Reports Screen");
+                                                    returnChoice = scanner.nextLine().trim().toUpperCase();
+                                                    if (returnChoice.equals("X")) {
+                                                        System.out.println("Returning to the Reports Screen...");
+                                                        break;
+                                                    }
                                                     break;
+
                                                 case "5":
                                                     System.out.println("Search by Vendor/Description...");
-                                                    // code to search
+                                                    System.out.print("Enter a keyword to search (vendor OR description): ");
+                                                    String keyword = scanner.nextLine().trim().toLowerCase();
+
+                                                    try {
+                                                        File taskFile = new File("transactionsAmount.csv");
+                                                        Scanner fileScanner = new Scanner(taskFile);
+
+                                                        ArrayList<String> matchingTransactions = new ArrayList<>();
+
+                                                        while (fileScanner.hasNextLine()) {
+                                                            String line = fileScanner.nextLine();
+                                                            String[] parts = line.split("\\|");
+
+                                                            if (parts.length >= 4) {  //I tried amazon lowered case, and it didn't work, so I tried this new line
+                                                                String vendorOrDescription=parts[2].trim().toLowerCase();
+
+                                                                if (vendorOrDescription.contains(keyword)){
+                                                                    matchingTransactions.add(line);
+                                                                }
+                                                            }
+                                                        }
+
+                                                        fileScanner.close();
+
+                                                        if (matchingTransactions.isEmpty()) {
+                                                            System.out.println("No transactions found with the keyword: " + keyword);
+                                                        } else {
+                                                            System.out.println("Matching Transactions:");
+                                                            for (String transaction : matchingTransactions) {
+                                                                System.out.println(transaction);
+                                                            }
+                                                        }
+
+                                                    } catch (FileNotFoundException e) {
+                                                        System.out.println("Transaction file not found. Returning to Home Screen...");
+                                                    }
+
+                                                    System.out.println("Type X to return to the Reports Screen");
+                                                    returnChoice = scanner.nextLine().trim().toUpperCase();
+                                                    if (returnChoice.equals("X")) {
+                                                        System.out.println("Returning to the Reports Screen...");
+                                                        break;
+                                                    }
                                                     break;
                                                 case "6":
                                                     System.out.println("Custom Search...");
