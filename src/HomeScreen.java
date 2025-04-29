@@ -270,7 +270,7 @@ public class HomeScreen {
                                             }
                                             break;
 
-                                        case "2": //for now I left now transaction for last month just so i can see the error message.
+                                        case "2": //for now, I left the transaction for last month empty just so i can see the error message.
                                             System.out.println("Showing Previous Month Report...");
 
                                             int lastMonth=(currentMonth==1)?12:currentMonth-1;
@@ -323,10 +323,55 @@ public class HomeScreen {
                                             }
                                             break;
 
-                                        case "3":
+                                        case "3": //YEAR TO DATE code
                                                     System.out.println("Showing Year to Date Report...");
-                                                    // code for YTD
-                                                    break;
+
+                                            try {
+                                                File taskFile = new File("transactionsAmount.csv");
+                                                Scanner fileScanner = new Scanner(taskFile);
+
+                                                ArrayList<String> ytdTransactions = new ArrayList<>();  //defining the month to date transactions
+
+                                                while (fileScanner.hasNextLine()) {
+                                                    String line = fileScanner.nextLine();
+
+                                                    String[] parts = line.split("\\|");
+                                                    if (parts.length >= 3) {
+                                                        String datePart = parts[0];
+                                                        String[] dateParts = datePart.split("-");
+
+                                                        if (dateParts.length == 3) {
+                                                            int transactionYear = Integer.parseInt(dateParts[0]);
+                                                            int transactionMonth = Integer.parseInt(dateParts[1]);
+                                                            if (transactionYear == currentYear && transactionMonth >= 1 && transactionMonth <= currentMonth) {
+                                                                ytdTransactions.add(line);
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                                fileScanner.close();
+
+                                                if (ytdTransactions.isEmpty()) {
+                                                    System.out.println("No transactions this year so far.");
+                                                } else {
+                                                    System.out.println("This year's transactions so far:");
+                                                    for (String transaction : ytdTransactions) {
+                                                        System.out.println(transaction);
+                                                    }
+                                                }
+                                            } catch (FileNotFoundException e) {
+                                                System.out.println("No transactions found.Returning to Home Screen...");
+
+                                            }
+                                            System.out.println("Type X to return to the Reports Screen");
+                                            returnChoice = scanner.nextLine().trim().toUpperCase();
+                                            if (returnChoice.equals("X")) {
+                                                System.out.println("Returning to the Reports Screen...");
+                                                break;
+                                            }
+                                            break;
+
                                                 case "4":
                                                     System.out.println("Showing Previous Year Report...");
                                                     // code for previous year
@@ -340,7 +385,7 @@ public class HomeScreen {
                                                     // code for custom search
                                                     break;
 
-                                                case "H":
+                                                case "0":
                                                     inReports = false;
                                                     break;
 
