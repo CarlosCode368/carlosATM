@@ -87,6 +87,12 @@ public class HomeScreen {
                     }
                     break;
 
+                //EXIT THE PROGRAM
+                case "X":
+                    isRunning = false; //application ends
+                    System.out.println("Thank you for choosing The Zarkovian Transactions Center.");
+                    break;
+
                 //ALL TRANSACTIONS VIEW
                 case "L":
                     boolean inLedger = true;
@@ -218,8 +224,8 @@ public class HomeScreen {
                                     LocalDateTime now = LocalDateTime.now();
                                     int currentMonth = now.getMonthValue();
                                     int currentYear = now.getYear();
-                                    int previousYear=currentYear-1;
-                                    String returnChoice="";
+                                    int previousYear = currentYear - 1;
+                                    String returnChoice = "";
 
                                     switch (reportChoice) {
                                         case "1":
@@ -274,7 +280,7 @@ public class HomeScreen {
                                         case "2": //for now, I left the transaction for last month empty just so i can see the error message.
                                             System.out.println("Showing Previous Month Report...");
 
-                                            int lastMonth=(currentMonth==1)?12:currentMonth-1;
+                                            int lastMonth = (currentMonth == 1) ? 12 : currentMonth - 1;
 
 
                                             try {
@@ -325,7 +331,7 @@ public class HomeScreen {
                                             break;
 
                                         case "3": //YEAR TO DATE code
-                                                    System.out.println("Showing Year to Date Report...");
+                                            System.out.println("Showing Year to Date Report...");
 
                                             try {
                                                 File taskFile = new File("transactionsAmount.csv");
@@ -373,134 +379,227 @@ public class HomeScreen {
                                             }
                                             break;
 
-                                                case "4":
-                                                    System.out.println("Showing Previous Year Report...");
-                                                    try {
-                                                        File taskFile = new File("transactionsAmount.csv");
-                                                        Scanner fileScanner = new Scanner(taskFile);
+                                        case "4":
+                                            System.out.println("Showing Previous Year Report...");
+                                            try {
+                                                File taskFile = new File("transactionsAmount.csv");
+                                                Scanner fileScanner = new Scanner(taskFile);
 
-                                                        ArrayList<String> pyTransactions = new ArrayList<>();  //defining the month to date transactions
+                                                ArrayList<String> pyTransactions = new ArrayList<>();  //defining the month to date transactions
 
-                                                        while (fileScanner.hasNextLine()) {
-                                                            String line = fileScanner.nextLine();
+                                                while (fileScanner.hasNextLine()) {
+                                                    String line = fileScanner.nextLine();
 
-                                                            String[] parts = line.split("\\|");
-                                                            if (parts.length >= 3) {
-                                                                String datePart = parts[0];
-                                                                String[] dateParts = datePart.split("-");
+                                                    String[] parts = line.split("\\|");
+                                                    if (parts.length >= 3) {
+                                                        String datePart = parts[0];
+                                                        String[] dateParts = datePart.split("-");
 
-                                                                if (dateParts.length == 3) {
-                                                                    int transactionYear = Integer.parseInt(dateParts[0]);
-                                                                    if(transactionYear==previousYear){
-                                                                        pyTransactions.add(line);
-                                                                    }
-                                                                }
+                                                        if (dateParts.length == 3) {
+                                                            int transactionYear = Integer.parseInt(dateParts[0]);
+                                                            if (transactionYear == previousYear) {
+                                                                pyTransactions.add(line);
                                                             }
                                                         }
+                                                    }
+                                                }
 
-                                                        fileScanner.close();
+                                                fileScanner.close();
 
-                                                        if (pyTransactions.isEmpty()) {
-                                                            System.out.println("No transactions last year.");
-                                                        } else {
-                                                            System.out.println("Last year transactions:");
-                                                            for (String transaction : pyTransactions) {
-                                                                System.out.println(transaction);
+                                                if (pyTransactions.isEmpty()) {
+                                                    System.out.println("No transactions last year.");
+                                                } else {
+                                                    System.out.println("Last year transactions:");
+                                                    for (String transaction : pyTransactions) {
+                                                        System.out.println(transaction);
+                                                    }
+                                                }
+                                            } catch (FileNotFoundException e) {
+                                                System.out.println("No transactions found.Returning to Home Screen...");
+
+                                            }
+                                            System.out.println("Type X to return to the Reports Screen");
+                                            returnChoice = scanner.nextLine().trim().toUpperCase();
+                                            if (returnChoice.equals("X")) {
+                                                System.out.println("Returning to the Reports Screen...");
+                                                break;
+                                            }
+                                            break;
+
+                                        case "5":
+                                            System.out.println("Search by Vendor/Description...");
+                                            System.out.print("Enter a keyword to search (vendor OR description): ");
+                                            String keyword = scanner.nextLine().trim().toLowerCase();
+
+                                            try {
+                                                File taskFile = new File("transactionsAmount.csv");
+                                                Scanner fileScanner = new Scanner(taskFile);
+
+                                                ArrayList<String> matchingTransactions = new ArrayList<>();
+
+                                                while (fileScanner.hasNextLine()) {
+                                                    String line = fileScanner.nextLine();
+                                                    String[] parts = line.split("\\|");
+
+                                                    if (parts.length >= 4) {  //I tried amazon lowered case, and it didn't work, so I tried this new line
+                                                        String vendorOrDescription = parts[2].trim().toLowerCase();
+
+                                                        if (vendorOrDescription.contains(keyword)) {
+                                                            matchingTransactions.add(line);
+                                                        }
+                                                    }
+                                                }
+
+                                                fileScanner.close();
+
+                                                if (matchingTransactions.isEmpty()) {
+                                                    System.out.println("No transactions found with the keyword: " + keyword);
+                                                } else {
+                                                    System.out.println("Matching Transactions:");
+                                                    for (String transaction : matchingTransactions) {
+                                                        System.out.println(transaction);
+                                                    }
+                                                }
+
+                                            } catch (FileNotFoundException e) {
+                                                System.out.println("Transaction file not found. Returning to Home Screen...");
+                                            }
+
+                                            System.out.println("Type X to return to the Reports Screen");
+                                            returnChoice = scanner.nextLine().trim().toUpperCase();
+                                            if (returnChoice.equals("X")) {
+                                                System.out.println("Returning to the Reports Screen...");
+                                                break;
+                                            }
+                                            break;
+                                        case "6":
+                                            System.out.println("Custom Search...");
+                                            System.out.println("1. Search by Date");
+                                            System.out.println("2. Search by Amount");
+                                            System.out.print("Select the search type (1 or 2): ");
+                                            String searchType = scanner.nextLine().trim();
+
+                                            // Perform search based on user's choice
+                                            if (searchType.equals("1")) {
+                                                // Search by Date
+                                                System.out.print("Enter the date to search (YYYY-MM-DD): ");
+                                                String searchDate = scanner.nextLine().trim();
+
+                                                try {
+                                                    File taskFile = new File("transactionsAmount.csv");
+                                                    Scanner fileScanner = new Scanner(taskFile);
+
+                                                    ArrayList<String> matchingTransactions = new ArrayList<>();
+
+                                                    while (fileScanner.hasNextLine()) {
+                                                        String line = fileScanner.nextLine();
+                                                        String[] parts = line.split("\\|");
+
+                                                        if (parts.length >= 4) {
+                                                            String transactionDate = parts[0].trim();  // Date is in the first column
+
+                                                            if (transactionDate.equals(searchDate)) {
+                                                                matchingTransactions.add(line);
                                                             }
                                                         }
-                                                    } catch (FileNotFoundException e) {
-                                                        System.out.println("No transactions found.Returning to Home Screen...");
-
                                                     }
-                                                    System.out.println("Type X to return to the Reports Screen");
-                                                    returnChoice = scanner.nextLine().trim().toUpperCase();
-                                                    if (returnChoice.equals("X")) {
-                                                        System.out.println("Returning to the Reports Screen...");
-                                                        break;
+
+                                                    fileScanner.close();
+
+                                                    if (matchingTransactions.isEmpty()) {
+                                                        System.out.println("No transactions found with the date: " + searchDate);
+                                                    } else {
+                                                        System.out.println("Matching Transactions:");
+                                                        for (String transaction : matchingTransactions) {
+                                                            System.out.println(transaction);
+                                                        }
                                                     }
-                                                    break;
 
-                                                case "5":
-                                                    System.out.println("Search by Vendor/Description...");
-                                                    System.out.print("Enter a keyword to search (vendor OR description): ");
-                                                    String keyword = scanner.nextLine().trim().toLowerCase();
+                                                } catch (FileNotFoundException e) {
+                                                    System.out.println("Transaction file not found. Returning to Home Screen...");
+                                                }
+                                            } else if (searchType.equals("2")) {
+                                                // Search by Amount
+                                                System.out.print("Enter the amount to search, Please include cents.: ");
+                                                String searchAmountString = scanner.nextLine().trim();
 
-                                                    try {
-                                                        File taskFile = new File("transactionsAmount.csv");
-                                                        Scanner fileScanner = new Scanner(taskFile);
+                                                try {
+                                                    double searchAmount = Double.parseDouble(searchAmountString);  // Convert to double
 
-                                                        ArrayList<String> matchingTransactions = new ArrayList<>();
+                                                    File taskFile = new File("transactionsAmount.csv");
+                                                    Scanner fileScanner = new Scanner(taskFile);
 
-                                                        while (fileScanner.hasNextLine()) {
-                                                            String line = fileScanner.nextLine();
-                                                            String[] parts = line.split("\\|");
+                                                    ArrayList<String> matchingTransactions = new ArrayList<>();
 
-                                                            if (parts.length >= 4) {  //I tried amazon lowered case, and it didn't work, so I tried this new line
-                                                                String vendorOrDescription=parts[2].trim().toLowerCase();
+                                                    while (fileScanner.hasNextLine()) {
+                                                        String line = fileScanner.nextLine();
+                                                        String[] parts = line.split("\\|");
 
-                                                                if (vendorOrDescription.contains(keyword)){
+                                                        if (parts.length >= 4) {
+                                                            String amountString = parts[3].trim();
+
+                                                            try {
+                                                                double transactionAmount = Double.parseDouble(amountString);  // Convert to double
+                                                                if (transactionAmount == searchAmount) {
                                                                     matchingTransactions.add(line);
                                                                 }
+                                                            } catch (NumberFormatException e) {
+                                                                // Handle if the amount is not a valid number
+                                                                System.out.println("Invalid amount format in file.");
                                                             }
                                                         }
+                                                    }
 
-                                                        fileScanner.close();
+                                                    fileScanner.close();
 
-                                                        if (matchingTransactions.isEmpty()) {
-                                                            System.out.println("No transactions found with the keyword: " + keyword);
-                                                        } else {
-                                                            System.out.println("Matching Transactions:");
-                                                            for (String transaction : matchingTransactions) {
-                                                                System.out.println(transaction);
-                                                            }
+                                                    if (matchingTransactions.isEmpty()) {
+                                                        System.out.println("No transactions found with the amount: " + searchAmount);
+                                                    } else {
+                                                        System.out.println("Matching Transactions:");
+                                                        for (String transaction : matchingTransactions) {
+                                                            System.out.println(transaction);
                                                         }
-
-                                                    } catch (FileNotFoundException e) {
-                                                        System.out.println("Transaction file not found. Returning to Home Screen...");
                                                     }
 
-                                                    System.out.println("Type X to return to the Reports Screen");
-                                                    returnChoice = scanner.nextLine().trim().toUpperCase();
-                                                    if (returnChoice.equals("X")) {
-                                                        System.out.println("Returning to the Reports Screen...");
-                                                        break;
-                                                    }
-                                                    break;
-                                                case "6":
-                                                    System.out.println("Custom Search...");
-                                                    // code for custom search
-                                                    break;
+                                                } catch (NumberFormatException | FileNotFoundException e) {
+                                                    System.out.println("Invalid amount format entered. Please try again.");
+                                                }
+                                            } else {
+                                                System.out.println("Invalid option. Returning to Home Screen...");
+                                            }
 
-                                                case "0":
-                                                    inReports = false;
-                                                    break;
+                                            System.out.println("Type X to return to the Reports Screen");
+                                            returnChoice = scanner.nextLine().trim().toUpperCase();
+                                            if (returnChoice.equals("X")) {
+                                                System.out.println("Returning to the Reports Screen...");
+                                                break;
+                                            }
+                                            break;
 
-                                                default:
-                                                    System.out.println("Invalid choice. Please try again.");
-                                                    break;
+                                        case "0":
+                                            System.out.println("Returning to Report screen...");
+                                            inReports = false;
+                                            break;
 
+                                        default:
+                                            System.out.println("Invalid choice. Please try again. ");
                                     }
                                 }
-                        }
-                    }
-
-                                break;
-
-                            case "H":
-                                inLedger=false;
-                                break;
-                            default:
-                                System.out.println("Invalid choice Please try again.");
-
-                            //EXIT THE PROGRAM
-                            case "X":
-                                isRunning = false; //application ends
-                                System.out.println("Thank you for choosing The Zarkovian Transactions Center.");
-                                break;
+                                    case"H":
+                                        System.out.println("Returning to Home screen");
+                                        inLedger=false;
+                                        break;
+                                }
                         }
                     }
             }
         }
+    }
+
+
+
+
+
 
 
 
