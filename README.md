@@ -18,11 +18,11 @@ User will be able to exit the application at the Home screen.
 The first step is to include the transaction file on the src folder so the compiler understands that you want to add information to that specific space. 
 
 ## Greet the User with the Main Menu
-![Greet the User](Images/CapstoneFirstGreet.jpg)
+![Greet the User](Images/CapstonefirstGreet.jpg)
 Code that greets the User 
 
 ## Ledger View
-![Ledger](Images/LedgerCode/jpg)
+![Ledger](Images/LedgerCode.jpg)
 ![Ledger](Images/CapstoneLedgerView.jpg)
 
 The most complex part of the code was the several options you have to code so the user can have all available resources to search any transaction. 
