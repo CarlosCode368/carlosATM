@@ -13,34 +13,34 @@ with several tools that the application provides.
 User will be able to exit the application at the Home screen. 
 
 ## Import the .Csv File
-![Import the .csv file](ImportedCsvFile.jpg)
+![Import the .csv file](Images/ImportedCsvFile.jpg)
 
 The first step is to include the transaction file on the src folder so the compiler understands that you want to add information to that specific space. 
 
 ## Greet the User with the Main Menu
-![Greet the User](CapstoneFirstGreet.jpg)
+![Greet the User](Images/CapstoneFirstGreet.jpg)
 Code that greets the User 
 
 ## Ledger View
-![Ledger](LedgerCode/jpg)
-![Ledger](CapstoneLedgerView.jpg)
+![Ledger](Images/LedgerCode/jpg)
+![Ledger](Images/CapstoneLedgerView.jpg)
 
 The most complex part of the code was the several options you have to code so the user can have all available resources to search any transaction. 
 
 ## Reports
 
 Inside the Ledger Menu, the user will find the reports where he or she can sort and organize the search in a way that is more efficient to find the transaction
-![In Reports](ReportsCode.jpg)
-![In Reports](ReportsCode2.jpg)
+![In Reports](Images/ReportsCode.jpg)
+![In Reports](Images/ReportsCode2.jpg)
 
 ## All Menus View
 All the menus the user can go through
-![Menu](AllMenus.jpg)
+![Menu](Images/AllMenus.jpg)
 
 ## Options to Return to the previous Screen
 A way for a user to return to the previous page if needed. 
 
-![Return](ReturnMenuCode.jpg)
+![Return](Images/ReturnMenuCode.jpg)
 
 ## Final Thoughts
 
